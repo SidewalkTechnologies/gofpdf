@@ -2139,6 +2139,11 @@ func (f *Fpdf) GetFontSize() (ptSize, unitSize float64) {
 	return f.fontSizePt, f.fontSize
 }
 
+// GetFontSettings returns the current font family, font style, and size
+func (f *Fpdf) GetFontSettings() (fontFamily, fontStyle string, fontSize float64) {
+	return f.fontFamily, f.fontStyle, f.fontSize
+}
+
 // AddLink creates a new internal link and returns its identifier. An internal
 // link is a clickable area which directs to another place within the document.
 // The identifier can then be passed to Cell(), Write(), Image() or Link(). The
@@ -2360,7 +2365,7 @@ func (f *Fpdf) CellFormat(w, h float64, txtStr, borderStr string, ln int,
 			// dbg("border is '1', no fill")
 			op = "S"
 		}
-		/// dbg("(CellFormat) f.x %.2f f.k %.2f", f.x, f.k)
+		// / dbg("(CellFormat) f.x %.2f f.k %.2f", f.x, f.k)
 		s.printf("%.2f %.2f %.2f %.2f re %s ", f.x*k, (f.h-f.y)*k, w*k, -h*k, op)
 	}
 	if len(borderStr) > 0 && borderStr != "1" {
@@ -2418,7 +2423,7 @@ func (f *Fpdf) CellFormat(w, h float64, txtStr, borderStr string, ln int,
 		if f.colorFlag {
 			s.printf("q %s ", f.color.text.str)
 		}
-		//If multibyte, Tw has no effect - do word spacing using an adjustment before each space
+		// If multibyte, Tw has no effect - do word spacing using an adjustment before each space
 		if (f.ws != 0 || alignStr == "J") && f.isCurrentUTF8 { // && f.ws != 0
 			if f.isRTL {
 				txtStr = reverseText(txtStr)
@@ -2461,7 +2466,7 @@ func (f *Fpdf) CellFormat(w, h float64, txtStr, borderStr string, ln int,
 			bt := (f.x + dx) * k
 			td := (f.h - (f.y + dy + .5*h + .3*f.fontSize)) * k
 			s.printf("BT %.2f %.2f Td (%s)Tj ET", bt, td, txt2)
-			//BT %.2F %.2F Td (%s) Tj ET',(f.x+dx)*k,(f.h-(f.y+.5*h+.3*f.FontSize))*k,txt2);
+			// BT %.2F %.2F Td (%s) Tj ET',(f.x+dx)*k,(f.h-(f.y+.5*h+.3*f.FontSize))*k,txt2);
 		}
 
 		if f.underline {
@@ -2713,9 +2718,9 @@ func (f *Fpdf) MultiCell(w, h float64, txtStr, borderStr, alignStr string, fill 
 			f.err = fmt.Errorf("character outside the supported range: %s", string(c))
 			return
 		}
-		if cw[int(c)] == 0 { //Marker width 0 used for missing symbols
+		if cw[int(c)] == 0 { // Marker width 0 used for missing symbols
 			l += f.currentFont.Desc.MissingWidth
-		} else if cw[int(c)] != 65535 { //Marker width 65535 used for zero width symbols
+		} else if cw[int(c)] != 65535 { // Marker width 65535 used for zero width symbols
 			l += cw[int(c)]
 		}
 		if l > wmax {
@@ -2925,7 +2930,7 @@ func (f *Fpdf) WriteLinkID(h float64, displayStr string, linkID int) {
 //
 // width indicates the width of the box the text will be drawn in. This is in
 // the unit of measure specified in New(). If it is set to 0, the bounding box
-//of the page will be taken (pageWidth - leftMargin - rightMargin).
+// of the page will be taken (pageWidth - leftMargin - rightMargin).
 //
 // lineHeight indicates the line height in the unit of measure specified in
 // New().
@@ -4171,7 +4176,7 @@ func (f *Fpdf) putfonts() {
 				f.putstream(cidToGidMap)
 				f.out("endobj")
 
-				//Font file
+				// Font file
 				f.newobj()
 				f.out("<</Length " + strconv.Itoa(len(compressedFontStream)))
 				f.out("/Filter /FlateDecode")
